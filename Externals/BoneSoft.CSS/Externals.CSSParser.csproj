@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{26881075-3F64-4825-A6B5-EAA0D5419D20}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BoneSoft.CSS</RootNamespace>
+    <AssemblyName>BoneSoft.CSS</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CSSParser.cs" />
+    <Compile Include="CSSRenderer.cs" />
+    <Compile Include="HSV.cs" />
+    <Compile Include="HTMLRenderer.cs" />
+    <Compile Include="Model\Attribute.cs" />
+    <Compile Include="Model\AttributeOperator.cs" />
+    <Compile Include="Model\Combinator.cs" />
+    <Compile Include="Model\Directive.cs" />
+    <Compile Include="Model\DirectiveType.cs" />
+    <Compile Include="Model\Function.cs" />
+    <Compile Include="Model\CSSDocument.cs" />
+    <Compile Include="Model\Declaration.cs" />
+    <Compile Include="Model\Expression.cs" />
+    <Compile Include="Model\IDeclarationContainer.cs" />
+    <Compile Include="Model\IRuleSetContainer.cs" />
+    <Compile Include="Model\Medium.cs" />
+    <Compile Include="Model\RuleSet.cs" />
+    <Compile Include="Model\Selector.cs" />
+    <Compile Include="Model\SimpleSelector.cs" />
+    <Compile Include="Model\Term.cs" />
+    <Compile Include="Model\TermType.cs" />
+    <Compile Include="Model\Unit.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scanner.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
