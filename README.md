@@ -20,4 +20,5 @@ Moth was built out of the work we've done on the mobile website of the Dutch lea
 and with a minimum of requests and with blazing speed. 
 You can <a href="http://m.funda.nl">check for yourself</a> how fast it is.
 
-<a href="docs/test.md">test</a>
+## Documentation?
+Click on 'docs' in the file tree!
