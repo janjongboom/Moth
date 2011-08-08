@@ -19,6 +19,3 @@ Moth was built out of the work we've done on the mobile website of the Dutch lea
 <a href="http://www.funda.nl">funda</a>. The mobile site serves 200.000 pageviews per day with ease,
 and with a minimum of requests and with blazing speed. 
 You can <a href="http://m.funda.nl">check for yourself</a> how fast it is.
-
-## Documentation?
-Click on 'docs' in the file tree!
