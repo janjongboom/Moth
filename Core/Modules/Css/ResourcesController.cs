@@ -19,6 +19,15 @@ namespace Moth.Core
 {
     public partial class ResourcesController
     {
+        // N.B. There are 'CSS extensions' planned (css expressions started with 'moth-'. 
+        // First should be a 'spriting' module.
+        // This feature is unstable at this point, so don't use it :-)
+
+        /// <summary>
+        /// Combines and minifies CSS files
+        /// </summary>
+        /// <param name="keys"></param>
+        /// <returns></returns>
         [HttpGet, FarFutureExpiration]
         public ActionResult Css(string keys)
         {
@@ -96,11 +105,12 @@ namespace Moth.Core
             return _provider.GetFromCache("spritedefinition." + file, () =>
             {
                 var parser = new BoneSoft.CSS.CSSParser();
-                string allText = System.IO.File.ReadAllText(HttpContext.Server.MapPath(file));
+                var fullCssPath = HttpContext.Server.MapPath(file);
+                string allText = System.IO.File.ReadAllText(fullCssPath);
 
                 if (_provider.Enable.CssTidy)
                 {
-                    allText = new CssTidy().Tidy(HttpContext.Server.MapPath(file));
+                    allText = new CssTidy().Tidy(fullCssPath);
                 }
 
                 var doc = parser.ParseText(allText);
@@ -181,6 +191,25 @@ namespace Moth.Core
                     sprite.Declarations = sprite.Declarations.Where(s => !s.Name.StartsWith("moth-")).ToList();
                 }
 
+                // find all URL declarations that aren't already processed by the spriting
+                foreach(var uri in doc.RuleSets
+                    .SelectMany(d=>d.Declarations.SelectMany(r=>r.Expression.Terms.Where(t=>t.Type == TermType.Url))))
+                {
+                    MakeUriTagRelative(uri, fullCssPath);
+                }
+
+
+                //foreach(var image in doc.RuleSets
+                //    .Where(d => !d.Declarations.Any(r => r.Name.Equals("moth-original-filename", StringComparison.OrdinalIgnoreCase)))
+                //    .Where(d=>d.Declarations.Any(r => r.Name.Equals("background-image", StringComparison.OrdinalIgnoreCase))
+                //    || d.Declarations.Any(r => r.Name.Equals("background", StringComparison.OrdinalIgnoreCase))).ToList())
+                //{
+                //    var imageTag = GetImageTerm(image);
+
+                //    // replace the current value of the image tag with a new relative path
+                    
+                //}
+
                 return new SpriteRuleSet
                 {
                     Hash = hash.ToString(),
@@ -202,6 +231,23 @@ namespace Moth.Core
                 term = sprite.Declarations.First(d => d.Name == "background").Expression.Terms.First(t => t.Type == BoneSoft.CSS.TermType.Url);
             }
             return term;
+        }
+
+        private void MakeUriTagRelative(Term term, string fullCssPath)
+        {
+            // if the term is an absolute URI then we'll just move on
+            var uri = new Uri(term.Value, UriKind.RelativeOrAbsolute);
+
+            if (term.Value.StartsWith("/") || uri.IsAbsoluteUri)
+                return;
+
+            // make the url absolute
+            var absolute = new Uri(Path.Combine(Path.GetDirectoryName(fullCssPath), uri.ToString()));
+
+            var resourceUri = new Uri(HttpContext.Server.MapPath("~/resources/css/"));
+
+            // and make it relative again so we can use it :-)
+            term.Value = resourceUri.MakeRelativeUri(absolute).ToString();
         }
     }
 

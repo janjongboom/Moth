@@ -16,6 +16,11 @@ namespace Moth.Core
             get { return (HttpContext.Current.Items["Stylesheets"] ?? (HttpContext.Current.Items["Stylesheets"] = new List<ResourceGroup>())) as List<ResourceGroup>; }
         }
 
+        /// <summary>
+        /// Register a stylesheet
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="cssFile"></param>
         public static void RegisterStylesheet(this HtmlHelper html, string cssFile)
         {
             RegisterStylesheet(html, cssFile, null);

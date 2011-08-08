@@ -13,9 +13,9 @@ namespace Mvc3.Demo.Controllers
         //
         // GET: /Home/
 
-        public ActionResult Index()
+        public ActionResult Index(string viewName)
         {
-            return View();
+            return View(viewName);
         }
 
     }

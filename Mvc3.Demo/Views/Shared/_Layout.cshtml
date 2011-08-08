@@ -12,14 +12,11 @@
 </head>
 
 <body>
-    <h1>Welcome to Moth</h1>
-    @Html.DataUriImage("http://www.ourwildlifephotography.com/gallery_insects/insects_eyed_hawk_moth.jpg")
-    <p>Moth is a ready-to-use library for ASP.NET MVC, that minimizes requests.</p>
+    <div class="header">
+        <h1>Moth</h1>
+        <em>Making the web fast</em>
+    </div>
 
     @RenderBody()
-
-    @{ Html.RegisterScript("~/Scripts/modernizr-1.7.js"); }
-
-    @Html.RenderScripts()
 </body>
 </html>
