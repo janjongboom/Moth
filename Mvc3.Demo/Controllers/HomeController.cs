@@ -7,16 +7,26 @@ using Moth.Core;
 
 namespace Mvc3.Demo.Controllers
 {
-    [MothAction(OutputCaching = false)]
+    [MothAction(OutputCaching = true)]
     public class HomeController : Controller
     {
         //
         // GET: /Home/
 
-        public ActionResult Index(string viewName)
+        public ActionResult Index()
         {
-            return View(viewName);
+            return View();
         }
 
+        public ActionResult OutputCaching()
+        {
+            return View();
+        }
+
+
+        public ActionResult CurrentDateTime()
+        {
+            return Content(DateTime.Now.ToString());
+        }
     }
 }

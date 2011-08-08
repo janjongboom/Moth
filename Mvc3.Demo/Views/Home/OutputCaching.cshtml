@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "OutputCaching";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>OutputCaching sample</h2>
+
+<p>This page is Output Caching enabled.</p>
+
+<p>Normal: @{ Html.RenderAction("CurrentDateTime", "Home"); }</p>
+<p>Donut hole: @{ Html.RenderMothAction("CurrentDateTime", "Home"); }</p>
