@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Moth.Core;
 using NerdDinner.Helpers;
 using NerdDinner.Models;
 
@@ -28,6 +29,7 @@ namespace NerdDinner.Controllers {
         //      /Dinners/Page/2
         //      /Dinners?q=term
 
+        [MothAction(OutputCaching = true)]
         public ActionResult Index(string q, int? page) {
 
             const int pageSize = 25;
@@ -48,6 +50,7 @@ namespace NerdDinner.Controllers {
         //
         // GET: /Dinners/Details/5
 
+        [MothAction(OutputCaching=true)]
         public ActionResult Details(int? id) {
             if (id == null) {
                 return new FileNotFoundResult { Message = "No Dinner found due to invalid dinner id" };

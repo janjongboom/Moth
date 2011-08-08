@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using Moth.Core.Execution;
+using Moth.Core.Helpers;
 using Moth.Core.Providers;
 
 namespace Moth.Core
@@ -16,12 +18,20 @@ namespace Moth.Core
     /// </summary>
     public class MothAction : ActionFilterAttribute
     {
+        #region Dependencies
+        // gotta replace these kind of things with StuctureMap one day
+        private static readonly IAssemblySearcher AssemblySearcher = new AssemblySearcher();
+        #endregion
+
         // default cache provider is asp.net met 10 minuten
         internal static IOutputCacheProvider CacheProvider { get; private set; }
+
+        private static List<IExecutor> _executors;
 
         static MothAction()
         {
             CacheProvider = new AspNetCacheProvider();
+            _executors = AssemblySearcher.FindImplementations<IExecutor>().Select(t=>Activator.CreateInstance(t)).Cast<IExecutor>().ToList();
         }
 
         /// <summary>
@@ -70,7 +80,14 @@ namespace Moth.Core
                 // zoja, doe dan dat maar teruggeven
                 if(cacheResult != null)
                 {
-                    var content = OutputSubstitutionExecuter.ReplaceDonutHoles(filterContext.HttpContext, filterContext.Controller.ControllerContext, cacheResult.Content);
+                    string content = cacheResult.Content;
+
+                    // execute all executors that don't allow for caching
+                    foreach(var executor in _executors.Where(e=>e.AllowCaching == AllowCachingEnum.No))
+                    {
+                        content = executor.Replace(filterContext.HttpContext, filterContext.Controller.ControllerContext, content);
+                    }
+
                     filterContext.Result = new ContentResult() { Content = content, ContentType = cacheResult.ContentType };
                     return;
                 }
@@ -95,6 +112,12 @@ namespace Moth.Core
             HtmlTextWriter cacheWriter = (HtmlTextWriter)SwitchWriterMethod.Invoke(HttpContext.Current.Response, new object[] { _originalWriter });
             var textWritten = cacheWriter.InnerWriter.ToString();
 
+            // execute all executors that allow for caching
+            foreach (var executor in _executors.Where(e => e.AllowCaching == AllowCachingEnum.Yes))
+            {
+                textWritten = executor.Replace(filterContext.HttpContext, filterContext.Controller.ControllerContext, textWritten);
+            }
+
             // cachen voor de volgende keer?
             if (OutputCaching && CacheProvider.Enable.PageOutput && filterContext.Exception == null)
             {
@@ -107,7 +130,10 @@ namespace Moth.Core
                 CacheProvider.Store(_cacheKey, result, CacheProvider.CacheDurations.PageOutput);
             }
 
-            textWritten = OutputSubstitutionExecuter.ReplaceDonutHoles(filterContext.HttpContext, filterContext.Controller.ControllerContext, textWritten);
+            foreach (var executor in _executors.Where(e => e.AllowCaching == AllowCachingEnum.No))
+            {
+                textWritten = executor.Replace(filterContext.HttpContext, filterContext.Controller.ControllerContext, textWritten);
+            }
 
             // output naar response stream
             filterContext.HttpContext.Response.Write(textWritten);

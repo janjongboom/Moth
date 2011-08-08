@@ -52,6 +52,7 @@ namespace NerdDinner
 
 		void Application_Start()
 		{
+		    Moth.Core.MothRouteFactory.RegisterRoutes(RouteTable.Routes);
 			RegisterRoutes(RouteTable.Routes);
 
 			ViewEngines.Engines.Clear();

@@ -11,7 +11,7 @@
 <asp:Content ID="indexContent" ContentPlaceHolderID="MainContent" runat="server">
 
 <script src="http://dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2" type="text/javascript"></script>
-<script src="/Scripts/MSAjaxHistoryBundle.js" type="text/javascript"></script>
+<script src="<%=ResolveUrl("~/Scripts/MSAjaxHistoryBundle.js") %>" type="text/javascript"></script>
 
 <h2>Find a Dinner</h2>
 

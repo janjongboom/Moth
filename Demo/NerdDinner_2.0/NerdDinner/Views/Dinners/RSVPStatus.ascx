@@ -1,7 +1,7 @@
 <%@ Control Language="C#" Inherits="System.Web.Mvc.ViewUserControl<NerdDinner.Models.Dinner>" %>
 
-<script src="/Scripts/MicrosoftAjax.js" type="text/javascript"></script>
-<script src="/Scripts/MicrosoftMvcAjax.js" type="text/javascript"></script>    
+<script src="<%=ResolveUrl("~/Scripts/MicrosoftAjax.js") %>" type="text/javascript"></script>
+<script src="<%=ResolveUrl("~/Scripts/MicrosoftMvcAjax.js") %>" type="text/javascript"></script>    
 
 <script type="text/javascript">
 
@@ -36,9 +36,9 @@
 <% } else { %>
 
     <strong>RSVP for this event:</strong>
-    <a href="<%= Url.Action("RsvpTwitterBegin", "RSVP", new { id = Model.DinnerID }) %>"><img alt="Twitter" src="/Content/Img/icon-twitter.png" border="0" /></a>
-    <a href="<%= Url.Action("RsvpBegin", "RSVP", new { id = Model.DinnerID, identifier = "https://www.google.com/accounts/o8/id" }) %>"><img alt="Google" src="/Content/Img/icon-google.png" border="0" /></a>
-    <a href="<%= Url.Action("RsvpBegin", "RSVP", new { id = Model.DinnerID, identifier = "https://me.yahoo.com/" }) %>"><img alt="Yahoo!" src="/Content/Img/icon-yahoo.png" border="0" /></a>
+    <a href="<%= Url.Action("RsvpTwitterBegin", "RSVP", new { id = Model.DinnerID }) %>"><img alt="Twitter" src="<%=ResolveUrl("~/Content/Img/icon-twitter.png") %>" border="0" /></a>
+    <a href="<%= Url.Action("RsvpBegin", "RSVP", new { id = Model.DinnerID, identifier = "https://www.google.com/accounts/o8/id" }) %>"><img alt="Google" src="<%=ResolveUrl("~/Content/Img/icon-google.png") %>" border="0" /></a>
+    <a href="<%= Url.Action("RsvpBegin", "RSVP", new { id = Model.DinnerID, identifier = "https://me.yahoo.com/" }) %>"><img alt="Yahoo!" src="<%=ResolveUrl("~/Content/Img/icon-yahoo.png") %>" border="0" /></a>
 <% } %>
     
 </div>    

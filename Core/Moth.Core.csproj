@@ -54,18 +54,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionResults\ImageActionResult.cs" />
+    <Compile Include="Helpers\MothEnabled.cs" />
+    <Compile Include="Helpers\ResourceWrapper.cs" />
+    <Compile Include="Modules\Css\ImageActionResult.cs" />
     <Compile Include="Controllers\ResourcesControllers.cs" />
-    <Compile Include="Execution\OutputSubstitutionExecuter.cs" />
+    <Compile Include="Execution\IExecutor.cs" />
+    <Compile Include="Modules\Css\CssExecutor.cs" />
+    <Compile Include="Modules\Css\ResourcesController.cs" />
+    <Compile Include="Modules\Css\ScriptHelper.cs" />
+    <Compile Include="Modules\DataUri\ScriptHelper.cs" />
+    <Compile Include="Modules\OutputSubstitution\OutputSubstitutionExecutor.cs" />
     <Compile Include="Externals\CssTidy.cs" />
     <Compile Include="Filters\FarFutureExpiration.cs" />
+    <Compile Include="Helpers\AssemblySearcher.cs" />
     <Compile Include="Helpers\CssDocumentExtender.cs" />
     <Compile Include="Helpers\MurmurHash.cs" />
     <Compile Include="Helpers\SpriteAlghoritms.cs" />
     <Compile Include="Helpers\SpriteComparers.cs" />
-    <Compile Include="HtmlHelpers\DataUriHelper.cs" />
-    <Compile Include="HtmlHelpers\InlineScriptHelper.cs" />
-    <Compile Include="HtmlHelpers\ScriptHelper.cs" />
+    <Compile Include="Modules\DataUri\DataUriHelper.cs" />
+    <Compile Include="Modules\Scripts\InlineScriptHelper.cs" />
+    <Compile Include="Modules\Scripts\ResourcesController.cs" />
+    <Compile Include="Modules\Scripts\ScriptExecutor.cs" />
+    <Compile Include="Modules\Scripts\ScriptHelper.cs" />
     <Compile Include="MothRouteFactory.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -73,7 +83,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Providers\AspNetCacheProvider.cs" />
-    <Compile Include="HtmlHelpers\OutputSubstitutionHelper.cs" />
+    <Compile Include="Modules\OutputSubstitution\OutputSubstitutionHelper.cs" />
     <Compile Include="Providers\CacheExtender.cs" />
     <Compile Include="Providers\IOutputCacheProvider.cs" />
     <Compile Include="MothAction.cs" />

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdDinner", "NerdDinner\Ne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NerdDinner.Tests", "NerdDinner.Tests\NerdDinner.Tests.csproj", "{DCF277C2-270F-4806-B2F6-8F757713D21A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Moth.Core", "..\..\Core\Moth.Core.csproj", "{E5A02C68-8745-4C93-BA1E-DB1F9CE5C123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Externals.CSSParser", "..\..\Externals\BoneSoft.CSS\Externals.CSSParser.csproj", "{26881075-3F64-4825-A6B5-EAA0D5419D20}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = NerdDinner.vsmdi
@@ -28,6 +32,14 @@ Global
 		{DCF277C2-270F-4806-B2F6-8F757713D21A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCF277C2-270F-4806-B2F6-8F757713D21A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCF277C2-270F-4806-B2F6-8F757713D21A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5A02C68-8745-4C93-BA1E-DB1F9CE5C123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5A02C68-8745-4C93-BA1E-DB1F9CE5C123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5A02C68-8745-4C93-BA1E-DB1F9CE5C123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5A02C68-8745-4C93-BA1E-DB1F9CE5C123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26881075-3F64-4825-A6B5-EAA0D5419D20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26881075-3F64-4825-A6B5-EAA0D5419D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26881075-3F64-4825-A6B5-EAA0D5419D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26881075-3F64-4825-A6B5-EAA0D5419D20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
