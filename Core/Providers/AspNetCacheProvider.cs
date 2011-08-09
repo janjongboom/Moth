@@ -12,7 +12,7 @@ namespace Moth.Core.Providers
                 {
                     PageOutput = new TimeSpan(0, 10, 0),
                     InlineScript = new TimeSpan(0, 10, 0),
-                    ExternalScript = new TimeSpan(0, 0, 0),
+                    ExternalScript = new TimeSpan(0, 10, 0),
                     DataUri = new TimeSpan(0, 20, 0)
                 };
 
