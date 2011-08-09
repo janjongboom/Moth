@@ -3,9 +3,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>OutputCaching sample</h2>
+<h2>OutputCaching example <a class="wiki" href="https://github.com/janjongboom/Moth/wiki/Server-side-caching">documentation</a></h2>
+<p>
+    Moth has a sophisticated Output Caching architecture, 
+    that allows you to specify which parts <strong>shouldn't</strong> be cached.
+</p>
 
-<p>This page is Output Caching enabled.</p>
+<h3>This action will be cached</h3>
+<pre>@@{ Html.RenderAction("CurrentDateTime", "Home"); }</pre>
+<p>@{ Html.RenderAction("CurrentDateTime", "Home"); }</p>
 
-<p>Normal: @{ Html.RenderAction("CurrentDateTime", "Home"); }</p>
-<p>Donut hole: @{ Html.RenderMothAction("CurrentDateTime", "Home"); }</p>
+<h3>This action will be refreshed every time</h3>
+<pre>@@{ Html.RenderMothAction("CurrentDateTime", "Home"); }</pre>
+<p>@{ Html.RenderMothAction("CurrentDateTime", "Home"); }</p>

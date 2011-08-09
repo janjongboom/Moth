@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "DataUri";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>DataUri example <a class="wiki" href="https://github.com/janjongboom/Moth/wiki/Data-Uri">documentation</a></h2>
+<p>
+    Moth supports inline-images, also called Data URIs. They can be served from your project, or external.
+</p>
+
+<h3>Relative path:</h3>
+<pre>@@Html.DataUriImage("~/content/images/fundalogo.gif")</pre>
+<p>
+    @Html.DataUriImage("~/content/images/fundalogo.gif")
+</p>
+
+<h3>External path:</h3>
+<pre>@@Html.DataUriImage("http://www.ozanimals.com/image/albums/australia/Insect/Bee-hawk-moth.jpg")</pre>
+<p>
+    @Html.DataUriImage("http://www.ozanimals.com/image/albums/australia/Insect/Bee-hawk-moth.jpg")
+</p>

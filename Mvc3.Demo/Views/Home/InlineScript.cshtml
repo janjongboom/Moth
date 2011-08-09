@@ -1,0 +1,55 @@
+﻿@{
+    ViewBag.Title = "InlineScript";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>InlineScript example <a class="wiki" href="https://github.com/janjongboom/Moth/wiki/Inline-script">documentation</a></h2>
+<p>
+    Moth can minify inline javascript, and even move it to the bottom of the page if you depend on
+    3rd party modules.
+    You can check the page source for the output.
+</p>
+
+<h3>This piece of code is jQuery dependent</h3>
+<pre>
+&lt;p class="i-want-jquery"&gt;&lt;/p&gt;
+&lt;script&gt;
+@@using (Html.BeginScript(ScriptPositionEnum.EndOfPage)) {
+    &lt;text&gt;
+    $(function () {
+        $('p.i-want-jquery').html('hello!');
+    });
+    &lt;/text&gt;
+}
+&lt;/script&gt;
+</pre>
+<p class="i-want-jquery"></p>
+<script>
+@using (Html.BeginScript(ScriptPositionEnum.EndOfPage)) {
+    <text>
+    $(function () {
+        $('p.i-want-jquery').html('hello from the bottom of the page!');
+    });
+    </text>
+}
+</script>
+
+<h3>This piece can be rendered in place, no dependencies</h3>
+<pre>
+&lt;p id=&quot;just-do-it&quot;&gt;&lt;/p&gt;
+&lt;script&gt;
+@@using (Html.BeginScript()) {
+    &lt;text&gt;
+    document.getElementById('just-do-it').innerHTML = 'hello from the middle of the page!';
+    &lt;/text&gt;
+}
+&lt;/script&gt;
+</pre>
+<p id="just-do-it"></p>
+<script>
+@using (Html.BeginScript()) {
+    <text>
+    document.getElementById('just-do-it').innerHTML = 'hello from the middle of the page!';
+    </text>
+}
+</script>

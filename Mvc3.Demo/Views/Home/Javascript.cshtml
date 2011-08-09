@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Javascript";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Javascript example <a class="wiki" href="https://github.com/janjongboom/Moth/wiki/Javascript">documentation</a></h2>
+<p>
+    Moth handles all external resources, like Javascript, for you. See the page source for the output.<br />
+    You can register all Javascript files your pages need, and call them on the bottom of the page, in one single request.
+</p>
+<p>
+    If you need inline javascript that relies on external javascript, read @Html.ActionLink("this section", "InlineScript")
+    how to deal with dependencies.
+</p>
+
+<h3>Registering a javascript file</h3>
+<pre>
+@@{ Html.RegisterScript("~/scripts/jquery.example.js"); }
+&lt;p&gt;The span here will be filled from javascript after 3 seconds: &lt;span class=&quot;hello&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+</pre>
+
+@{ Html.RegisterScript("~/scripts/jquery.example.js"); }
+<p>The span here will be filled from javascript  after 3 seconds: <span class="hello"></span></p>
+
+<h3>Rendering all javascript files</h3>
+<pre>
+    &lt;!-- Always render javascript at the bottom of the page for speed! --&gt;
+    @@Html.RenderScripts()
+&lt;/body&gt;
+</pre>
+
+<h4>Output</h4>
+<p>
+    In the _Layout.cshtml, we've already registered 'jquery-1.5.1.js', so now jQuery and our 'jquery.example.js' are combined
+    into 1 single request:
+</p>
+<pre>
+&lt;script src=&quot;/resources/javascript/?keys=~/Scripts/jquery-1.5.1.js|~/scripts/jquery.example.js&amp;amp;333773989&quot;&gt;&lt;/script&gt;
+</pre>

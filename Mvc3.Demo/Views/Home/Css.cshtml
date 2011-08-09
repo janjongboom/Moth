@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Css";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>CSS example <a class="wiki" href="https://github.com/janjongboom/Moth/wiki/CSS">documentation</a></h2>
+<p>
+    Moth handles all external resources, like CSS, for you. See the page source for the output.<br />
+    You can register all CSS files your pages need, and call them in the &lt;head&gt; of the page, in one single request.
+</p>
+
+<h3>Registering a CSS file</h3>
+<pre>
+@@{ Html.RegisterStylesheet("~/content/blue.css"); }
+&lt;p class="blue"&gt;I turn blue when 'blue.css' is loaded&lt;/p&gt;
+</pre>
+
+@{ Html.RegisterStylesheet("~/content/blue.css"); }
+<p class="blue">I turn blue when 'blue.css' is loaded</p>
+
+<h3>Rendering all CSS files</h3>
+<pre>
+&lt;head&gt;
+    &lt;!-- You can register CSS files after you've called 'RenderCss', so do this in your head-section --&gt;
+    @@Html.RenderCss()
+&lt;/head&gt;
+</pre>
+
+<h4>Output</h4>
+<p>
+    In the _Layout.cshtml, we've already registered 'Site.css', so now 'Site.css' and 'blue.css' are combined
+    into 1 single request:
+</p>
+<pre>
+&lt;link rel="stylesheet" type="text/css" media="all" href="/resources/css/?keys=~/Content/Site.css|~/content/blue.css&amp;2244052905" /&gt;
+</pre>

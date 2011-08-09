@@ -7,18 +7,37 @@ using Moth.Core;
 
 namespace Mvc3.Demo.Controllers
 {
-    [MothAction(OutputCaching = true)]
+    // I disable output caching on all examples except the Output Caching one, so you can more easily debug
+    [MothAction(OutputCaching = false)]
     public class HomeController : Controller
     {
-        //
-        // GET: /Home/
-
         public ActionResult Index()
         {
             return View();
         }
 
+        [MothAction(OutputCaching = true)]
         public ActionResult OutputCaching()
+        {
+            return View();
+        }
+
+        public ActionResult DataUri()
+        {
+            return View();
+        }
+
+        public ActionResult InlineScript()
+        {
+            return View();
+        }
+
+        public ActionResult Css()
+        {
+            return View();
+        }
+
+        public ActionResult Javascript()
         {
             return View();
         }
