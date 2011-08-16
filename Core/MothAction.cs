@@ -9,6 +9,9 @@ using System.Web.Mvc;
 using System.Web.UI;
 using Moth.Core.Execution;
 using Moth.Core.Helpers;
+using Moth.Core.Modules.Css;
+using Moth.Core.Modules.OutputSubstitution;
+using Moth.Core.Modules.Scripts;
 using Moth.Core.Providers;
 
 namespace Moth.Core
@@ -18,20 +21,20 @@ namespace Moth.Core
     /// </summary>
     public class MothAction : ActionFilterAttribute
     {
-        #region Dependencies
-        // gotta replace these kind of things with StuctureMap one day
-        private static readonly IAssemblySearcher AssemblySearcher = new AssemblySearcher();
-        #endregion
-
         // default cache provider is asp.net met 10 minuten
         internal static IOutputCacheProvider CacheProvider { get; private set; }
 
-        private static List<IExecutor> _executors;
+        private static readonly List<IExecutor> Executors = new List<IExecutor>();
 
         static MothAction()
         {
+            // default cacheprovider uses aspnet cache
             CacheProvider = new AspNetCacheProvider();
-            _executors = AssemblySearcher.FindImplementations<IExecutor>().Select(t=>Activator.CreateInstance(t)).Cast<IExecutor>().ToList();
+
+            // register the default executors
+            RegisterExecutor(new CssExecutor());
+            RegisterExecutor(new ScriptExecutor());
+            RegisterExecutor(new OutputSubstitutionExecutor());
         }
 
         /// <summary>
@@ -41,6 +44,15 @@ namespace Moth.Core
         public static void Initialize(IOutputCacheProvider provider)
         {
             CacheProvider = provider;
+        }
+
+        /// <summary>
+        /// Register an instance of an IExecutor to the global scope. Do this in Global.asax
+        /// </summary>
+        /// <param name="executor"></param>
+        public static void RegisterExecutor(IExecutor executor)
+        {
+            Executors.Add(executor);
         }
 
         private static readonly MethodInfo SwitchWriterMethod = typeof(HttpResponse).GetMethod("SwitchWriter", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -83,7 +95,7 @@ namespace Moth.Core
                     string content = cacheResult.Content;
 
                     // execute all executors that don't allow for caching
-                    foreach(var executor in _executors.Where(e=>e.AllowCaching == AllowCachingEnum.No))
+                    foreach(var executor in Executors.Where(e=>e.AllowCaching == AllowCachingEnum.No))
                     {
                         content = executor.Replace(filterContext.HttpContext, filterContext.Controller.ControllerContext, content);
                     }
@@ -113,7 +125,7 @@ namespace Moth.Core
             var textWritten = cacheWriter.InnerWriter.ToString();
 
             // execute all executors that allow for caching
-            foreach (var executor in _executors.Where(e => e.AllowCaching == AllowCachingEnum.Yes))
+            foreach (var executor in Executors.Where(e => e.AllowCaching == AllowCachingEnum.Yes))
             {
                 textWritten = executor.Replace(filterContext.HttpContext, filterContext.Controller.ControllerContext, textWritten);
             }
@@ -130,7 +142,7 @@ namespace Moth.Core
                 CacheProvider.Store(_cacheKey, result, CacheProvider.CacheDurations.PageOutput);
             }
 
-            foreach (var executor in _executors.Where(e => e.AllowCaching == AllowCachingEnum.No))
+            foreach (var executor in Executors.Where(e => e.AllowCaching == AllowCachingEnum.No))
             {
                 textWritten = executor.Replace(filterContext.HttpContext, filterContext.Controller.ControllerContext, textWritten);
             }

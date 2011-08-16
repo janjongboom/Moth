@@ -7,6 +7,10 @@ using System.Web.Mvc;
 
 namespace Moth.Core.Execution
 {
+    /// <summary>
+    /// An Executor is a HTML post processor action, which will be executed after the view engine
+    /// has generated the HTML. You can use this interface to replace certain parts of the HTML.
+    /// </summary>
     public interface IExecutor
     {
         /// <summary>
@@ -14,11 +18,12 @@ namespace Moth.Core.Execution
         /// </summary>
         /// <param name="httpContext"></param>
         /// <param name="controllerContext"></param>
-        /// <param name="input"></param>
+        /// <param name="input">Input HTML</param>
+        /// <returns>The new HTML that will be emitted to the browser</returns>
         string Replace(HttpContextBase httpContext, ControllerContext controllerContext, string input);
 
         /// <summary>
-        /// Indicates whether this executer should be ran every request, or may be cached
+        /// Indicates whether this executer should be ran every request, or may be cached.
         /// </summary>
         AllowCachingEnum AllowCaching { get; }
     }

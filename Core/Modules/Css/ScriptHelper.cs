@@ -17,15 +17,21 @@ namespace Moth.Core
         }
 
         /// <summary>
-        /// Register a stylesheet
+        /// Register a stylesheet to be included in this page
         /// </summary>
         /// <param name="html"></param>
-        /// <param name="cssFile"></param>
+        /// <param name="cssFile">Relative (with a tilde (~)), or absolute path to the css file</param>
         public static void RegisterStylesheet(this HtmlHelper html, string cssFile)
         {
             RegisterStylesheet(html, cssFile, null);
         }
 
+        /// <summary>
+        /// Register a stylesheet to be included in this page
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="cssFile">Relative (with a tilde (~)), or absolute path to the css file</param>
+        /// <param name="category">Stylesheets can be grouped into multiple requests, use a distinct category name per group</param>
         public static void RegisterStylesheet(this HtmlHelper html, string cssFile, string category)
         {
             bool inReverseOrder = false;

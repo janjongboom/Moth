@@ -5,9 +5,12 @@
     <title>@ViewBag.Title</title>
 
     @{
+        // you can register dependencies that are global here; both CSS and javascript
         Html.RegisterStylesheet("~/Content/Site.css");
         Html.RegisterScript("~/Scripts/jquery-1.5.1.js");
     }
+
+    @{ /* make sure to render CSS at the top of the page */ }
     @Html.RenderCss()
 </head>
 
@@ -19,6 +22,7 @@
 
     @RenderBody()
 
+    @{ /* make sure to render scripts at the bottom of the page; as it blocks execution */ }
     @Html.RenderScripts()
 </body>
 </html>

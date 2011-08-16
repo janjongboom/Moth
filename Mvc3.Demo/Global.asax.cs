@@ -16,12 +16,18 @@ namespace Mvc3.Demo
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+
+            // to make sure that Moth can post-process all requests, add a global filter
+            // this doesn't enable output caching by default, so no danger
             filters.Add(new MothAction());
         }
 
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            // call the Moth factory to register resources routes
+            MothRouteFactory.RegisterRoutes(RouteTable.Routes);
 
             routes.MapRoute("Default",
                             "{controller}/{action}/{id}",
@@ -32,9 +38,6 @@ namespace Mvc3.Demo
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-
-            // register moth routes
-            MothRouteFactory.RegisterRoutes(RouteTable.Routes);
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
