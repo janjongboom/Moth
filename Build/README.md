@@ -1,0 +1,1 @@
+Run build.bat to create a new Release build of the DLL for Moth Core. It ILMerge's all dependencies into one single DLL.

@@ -42,6 +42,12 @@ namespace Moth.Core.Externals
 
             process.WaitForExit();
 
+            if(string.IsNullOrEmpty(s))
+            {
+                // invalid css maybe?
+                return File.ReadAllText(fullLocalPath);
+            }
+
             return s;
         }
 
