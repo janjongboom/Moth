@@ -47,5 +47,10 @@ namespace Mvc3.Demo.Controllers
         {
             return Content(DateTime.Now.ToString());
         }
+
+        public ActionResult JavascriptDirectory()
+        {
+            return View();
+        }
     }
 }
