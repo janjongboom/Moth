@@ -23,6 +23,49 @@ namespace Moth.Core
             get { return (HttpContext.Current.Items["InlineScripts"] ?? (HttpContext.Current.Items["InlineScripts"] = new List<string>())) as List<string>; }
         }
 
+        public static void RegisterScriptDirectory(this HtmlHelper html, string jsDir, string category = null, int maxDepth = 0)
+        {
+            // If the directory doesn't exist, let the user know
+            string physicalPath = html.ViewContext.HttpContext.Server.MapPath(jsDir);
+            if (!Directory.Exists(physicalPath))
+                throw new DirectoryNotFoundException(string.Format("The script directory '{0}' does not exist", jsDir));
+
+            RegisterScriptDirectory(html, jsDir, category, 0, maxDepth);
+        }
+
+        internal static void RegisterScriptDirectory(HtmlHelper html, string contentDir, string category, int currentDepth, int maxDepth)
+        {
+            // Get the physical path for the content path
+            string physicalPath = html.ViewContext.HttpContext.Server.MapPath(contentDir);
+            if (string.IsNullOrEmpty(physicalPath))
+                return;
+
+            // Remove any leading slashes on the content directory
+            if (contentDir.Last() == '/')
+                contentDir = contentDir.Substring(0, contentDir.Length - 1);
+
+            // Get all javascript files in the directory and register them
+            foreach (var file in Directory.GetFiles(physicalPath))
+            {
+                if (Path.GetExtension(file) != ".js")
+                    continue;
+
+                string scriptPath = string.Format("{0}/{1}", contentDir, Path.GetFileName(file));
+                RegisterScript(html, scriptPath, category);
+            }
+
+            // Proceed to sub-directories if we aren't past the max depth
+            currentDepth++;
+            if (currentDepth > maxDepth)
+                return;
+
+            foreach (var subDir in Directory.GetDirectories(physicalPath))
+            {
+                string subDirContentPath = string.Format("{0}/{1}", contentDir, subDir.Substring(subDir.LastIndexOf(@"\") + 1));
+                RegisterScriptDirectory(html, subDirContentPath, category, currentDepth, maxDepth);
+            }
+        }
+
         public static void RegisterScript(this HtmlHelper html, string jsFile)
         {
             RegisterScript(html, jsFile, null);

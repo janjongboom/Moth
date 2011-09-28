@@ -75,6 +75,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\jquery-1.5.1.js" />
     <Content Include="Scripts\jquery.example.js" />
+    <Content Include="Scripts\SubDirectory\jquery-1.5.1.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -116,6 +117,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Javascript.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\JavascriptDirectory.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
