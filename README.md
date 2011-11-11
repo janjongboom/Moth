@@ -3,7 +3,7 @@
 Moth is a library for ASP.NET MVC that enables you to do all the 
 <strong>total awesomeness</strong>
 required to build &laquo;really fast websites&trade;&raquo;, just like
-<a href="http://stevesouders.com/">Steve Souders</a> thaught you.
+<a href="http://stevesouders.com/">Steve Souders</a> taught you.
 
 ## So what'd you offer?
 * Let your server cool off with the best caching framework available</li>
