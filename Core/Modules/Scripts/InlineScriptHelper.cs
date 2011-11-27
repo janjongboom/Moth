@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -134,12 +134,16 @@ namespace Moth.Core
                 {
                     _originalTw.Write(content);
                     _tw.Dispose();
-                    ((HtmlTextWriter)_htmlHelper.ViewContext.Writer).InnerWriter = _originalTw;
                 }
             }
             else
             {
                 MothScriptHelper.RegisterInlineScript(content);
+            }
+            // Set the writer back to the original, whether we are outputting here or at the bottom
+            if (_originalTw == null)
+            {
+                ((HtmlTextWriter)_htmlHelper.ViewContext.Writer).InnerWriter = _originalTw;
             }
         }
     }
