@@ -35,6 +35,7 @@ namespace Moth.Core
             RegisterExecutor(new CssExecutor());
             RegisterExecutor(new ScriptExecutor());
             RegisterExecutor(new OutputSubstitutionExecutor());
+            ViewEngineWrapper.Wrap();
         }
 
         /// <summary>
@@ -44,6 +45,7 @@ namespace Moth.Core
         public static void Initialize(IOutputCacheProvider provider)
         {
             CacheProvider = provider;
+            ViewEngineWrapper.Wrap();
         }
 
         /// <summary>

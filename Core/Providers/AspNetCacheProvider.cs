@@ -23,6 +23,12 @@ namespace Moth.Core.Providers
                     CssPreprocessing = true,
                     CssTidy = true
                 };
+            PathFixup = (file) =>
+                            {
+                                var filename = file;
+                                if (!filename.StartsWith("~/")) filename = "~/" + filename.TrimStart('/');
+                                return filename;
+                            };
         }
 
         public virtual T Get<T> (string key)
@@ -38,5 +44,7 @@ namespace Moth.Core.Providers
 
         public virtual IOutputCacheDurations CacheDurations { get; private set; }
         public virtual IOutputCacheRestrictions Enable { get; private set; }
+        public virtual Func<string, string> PathFixup { get; private set; }
+
     }
 }

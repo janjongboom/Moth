@@ -100,7 +100,7 @@ namespace Moth.Core
 
         private SpriteRuleSet GenerateSpriteDefinition(string file)
         {
-            if (!file.StartsWith("~/")) file = "~/" + file;
+            file = MothAction.CacheProvider.PathFixup(file);
 
             return _provider.GetFromCache("spritedefinition." + file, () =>
             {

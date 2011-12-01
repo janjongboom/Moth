@@ -33,13 +33,10 @@ namespace Moth.Core
     {
         private static readonly IOutputCacheProvider Provider;
 
-        private readonly MemoryStream _ms;
-        private readonly TextWriter _tw;
+        private readonly StringWriter _tw;
         private readonly TextWriter _originalTw;
         private readonly HtmlHelper _htmlHelper;
         private readonly ScriptPositionEnum _position;
-
-        private readonly int _startIndexOf;
 
         static MothInlineScriptWrapper()
         {
@@ -48,62 +45,31 @@ namespace Moth.Core
 
         public MothInlineScriptWrapper(HtmlHelper htmlHelper, ScriptPositionEnum position)
         {
-            _ms = new MemoryStream();
-            _tw = new StreamWriter(_ms);
-            _htmlHelper = htmlHelper;
+            if(htmlHelper == null || htmlHelper.ViewContext == null || htmlHelper.ViewContext.Writer == null)
+            {
+                throw new ArgumentNullException("htmlHelper.ViewContext.Writer");
+            }
+            if(! (htmlHelper.ViewContext.Writer is TextWriterWrapper))
+            {
+                throw new System.InvalidOperationException(
+                    "ViewContext.Writer is of the wrong type. This means that you have not yet initialized the ViewEngineWrapper for Moth or that extra ViewEngines have been registered afterwards. Add any ViewEngines before you make any call to Moth.");
+            }
+
             _position = position;
+            _tw = new StringWriter();
+            _htmlHelper = htmlHelper;
+            _htmlHelper.ViewContext.Writer.Flush();
 
-            // MVC 2
-            if (htmlHelper.ViewContext.Writer is HtmlTextWriter)
-            {
-                _originalTw = ((HtmlTextWriter)htmlHelper.ViewContext.Writer).InnerWriter;
-
-                ((HtmlTextWriter)htmlHelper.ViewContext.Writer).InnerWriter = _tw;
-            }
-
-            // MVC 3
-            if (htmlHelper.ViewContext.Writer is StringWriter)
-            {
-                _startIndexOf = ((StringWriter) _htmlHelper.ViewContext.Writer).GetStringBuilder().Length;
-            }
+            _originalTw = ((TextWriterWrapper)htmlHelper.ViewContext.Writer).InnerWriter;
+            ((TextWriterWrapper)htmlHelper.ViewContext.Writer).InnerWriter = _tw;
         }
 
         public void Dispose()
         {
             string content;
-
-
-            if (_originalTw == null)
-            {
-                if (_htmlHelper.ViewContext.Writer is StringWriter)
-                {
-                    // MVC 3
-                    var stringBuilder = ((StringWriter)_htmlHelper.ViewContext.Writer).GetStringBuilder();
-
-                    char[] inlineScript = new char[stringBuilder.Length - _startIndexOf];
-                    stringBuilder.CopyTo(_startIndexOf, inlineScript, 0, inlineScript.Length);
-
-                    content = new string(inlineScript);
-
-                    stringBuilder.Remove(_startIndexOf, inlineScript.Length);
-                }
-                else
-                {
-                    // fak joe
-                    return;
-                }
-            }
-            else
-            {
-                _tw.Flush();
-
-                _ms.Seek(0, SeekOrigin.Begin);
-
-                using (StreamReader sr = new StreamReader(_ms))
-                {
-                    content = sr.ReadToEnd();
-                }
-            }
+            _htmlHelper.ViewContext.Writer.Flush();
+            content = _tw.GetStringBuilder().ToString();
+            ((TextWriterWrapper)_htmlHelper.ViewContext.Writer).InnerWriter = _originalTw;
 
             var key = "inputhelper.scripts." + new MurmurHash2UInt32Hack().Hash(Encoding.UTF8.GetBytes(content));
             if (Provider.Enable.ScriptMinification)
@@ -125,25 +91,11 @@ namespace Moth.Core
 
             if (_position == ScriptPositionEnum.Current)
             {
-                if (_originalTw == null)
-                {
-                    // MVC 3?
-                    _htmlHelper.ViewContext.Writer.Write(content);
-                }
-                else
-                {
-                    _originalTw.Write(content);
-                    _tw.Dispose();
-                }
+                _htmlHelper.ViewContext.Writer.Write(content);
             }
             else
             {
                 MothScriptHelper.RegisterInlineScript(content);
-            }
-            // Set the writer back to the original, whether we are outputting here or at the bottom
-            if (_originalTw == null)
-            {
-                ((HtmlTextWriter)_htmlHelper.ViewContext.Writer).InnerWriter = _originalTw;
             }
         }
     }
