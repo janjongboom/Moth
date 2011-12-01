@@ -121,8 +121,7 @@ namespace Moth.Core
             StringBuilder script = new StringBuilder();
             foreach (var s in items)
             {
-                var filename = s;
-                if(!filename.StartsWith("~/")) filename = "~/" + filename.TrimStart('/');
+                var filename = MothAction.CacheProvider.PathFixup(s);
 
                 var filenameWithMapPath = httpContext.Server.MapPath(filename);
 

@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Helpers\MothEnabled.cs" />
     <Compile Include="Helpers\ResourceWrapper.cs" />
+    <Compile Include="Helpers\ViewEngineWrapper.cs" />
     <Compile Include="Modules\Css\ImageActionResult.cs" />
     <Compile Include="Controllers\ResourcesControllers.cs" />
     <Compile Include="Execution\IExecutor.cs" />

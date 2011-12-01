@@ -9,6 +9,8 @@ namespace Moth.Core
 
         IOutputCacheDurations CacheDurations { get; }
         IOutputCacheRestrictions Enable { get; }
+        Func<string, string> PathFixup { get; }
+
     }
 
     public interface IOutputCacheDurations
