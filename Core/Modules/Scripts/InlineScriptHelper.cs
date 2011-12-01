@@ -141,7 +141,7 @@ namespace Moth.Core
                 MothScriptHelper.RegisterInlineScript(content);
             }
             // Set the writer back to the original, whether we are outputting here or at the bottom
-            if (_originalTw == null)
+            if (_originalTw != null)
             {
                 ((HtmlTextWriter)_htmlHelper.ViewContext.Writer).InnerWriter = _originalTw;
             }
