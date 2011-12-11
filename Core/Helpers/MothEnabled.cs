@@ -48,6 +48,11 @@ namespace Moth.Core.Helpers
                 {
                     try
                     {
+                        if (view is ViewWrapper)
+                        {
+                            view = ((ViewWrapper)view).Inner;
+                        } 
+
                         var mvcDll = AppDomain.CurrentDomain.GetAssemblies().Where(t => t.GetName().Name == "System.Web.Mvc");
 
                         var compiledView = mvcDll.First().GetType("System.Web.Mvc.RazorView");

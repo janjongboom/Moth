@@ -60,16 +60,17 @@ namespace Moth.Core.Helpers
     }
     public class ViewWrapper : IView
     {
-        private IView _inner;
+        internal IView Inner { get; private set; }
+
         public ViewWrapper(IView inner)
         {
-            _inner = inner;
+            Inner = inner; 
         }
         public void Render(ViewContext viewContext, System.IO.TextWriter writer)
         {
             TextWriter wrappedWriter = (viewContext.Writer is TextWriterWrapper) ? viewContext.Writer : new TextWriterWrapper() { InnerWriter = viewContext.Writer };
             viewContext.Writer = wrappedWriter;
-            _inner.Render(viewContext, wrappedWriter);
+            Inner.Render(viewContext, wrappedWriter);
         }
     }
     public class TextWriterWrapper : TextWriter
