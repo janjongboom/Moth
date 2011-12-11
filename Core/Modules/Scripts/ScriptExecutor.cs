@@ -74,7 +74,7 @@ namespace Moth.Core.Modules.Scripts
                 }, Provider.CacheDurations.ExternalScript));
             }
 
-            sb.AppendLine(RenderDataUriFallback(httpContext));
+            sb.AppendLine(RenderDataUriFallback(httpContext, controllerContext));
 
             if (MothScriptHelper.InlineScripts.Any())
             {
@@ -91,7 +91,7 @@ namespace Moth.Core.Modules.Scripts
             return sb.ToString();
         }
 
-        private string RenderDataUriFallback(HttpContextBase httpContext)
+        private string RenderDataUriFallback(HttpContextBase httpContext, ControllerContext controllerContext)
         {
             if (MothScriptHelper.DataUris.Count == 0) return "";
 
@@ -101,10 +101,13 @@ namespace Moth.Core.Modules.Scripts
             {
                 var img = DataUriHelper.GetDataUriImageFromCache(item.Value, httpContext);
 
-                cssSb.AppendLine("." + item.Key + string.Format(@" {{ background-image:url(data:{0};base64,{1}); }}", img.Type, img.Base64));
-                cssSb.AppendLine(".no-data-uri ." + item.Key + " { background-image:url('" + item.Value + "'); }");
+                var urlHelper = new UrlHelper(new RequestContext(httpContext, controllerContext.RouteData));
+                var bgUrl = urlHelper.Content(item.Value);
 
-                noJsSb.AppendLine(("." + item.Key + " { background-image:url('" + item.Value + "'); }"));
+                cssSb.AppendLine("." + item.Key + string.Format(@" {{ background-image:url(data:{0};base64,{1}); }}", img.Type, img.Base64));
+                cssSb.AppendLine(".no-data-uri ." + item.Key + " { background-image:url('" + bgUrl + "'); }");
+
+                noJsSb.AppendLine(("." + item.Key + " { background-image:url('" + bgUrl + "'); }"));
             }
             noJsSb.Append("</style></noscript>");
             cssSb.Append("</style>");
