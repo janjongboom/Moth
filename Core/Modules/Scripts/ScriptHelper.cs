@@ -23,7 +23,7 @@ namespace Moth.Core
             get { return (HttpContext.Current.Items["InlineScripts"] ?? (HttpContext.Current.Items["InlineScripts"] = new List<string>())) as List<string>; }
         }
 
-        public static void RegisterScriptDirectory(this HtmlHelper html, string jsDir, string category = null, int maxDepth = 0)
+        public static void RegisterScriptDirectory(this HtmlHelper html, string jsDir, string category, int maxDepth)
         {
             // If the directory doesn't exist, let the user know
             string physicalPath = html.ViewContext.HttpContext.Server.MapPath(jsDir);
