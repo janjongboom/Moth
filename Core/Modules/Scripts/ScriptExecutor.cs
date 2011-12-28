@@ -27,10 +27,8 @@ namespace Moth.Core.Modules.Scripts
 
         // <% Moth.RenderJavascript(); %>
         private static Regex _renderPattern = new Regex(@"<%\s*Moth\.RenderJavascript\(\);\s*%>", RegexOptions.Compiled);
-        // <% Moth.BeginScript EndOfPage xxxxxxxxxxxxxxxxxxxxxxxxxx %>
-        private static Regex _inlinePattern = new Regex(@"<%\s*Moth\.BeginScript (Current|EndOfPage) [0-9a-f]{32}\s*%>", RegexOptions.Compiled);
-        // <% Moth.EndScript xxxxxxxxxxxxxxxxxxxxxxxxxx %>
-        private static Regex _inlineEndPattern = new Regex(@"<%\s*Moth\.EndScript [0-9a-f]{32}\s*%>", RegexOptions.Compiled);
+        // <% Moth.BeginScript EndOfPage xxxxxxxxxxxxxxxxxxxxxxxxxx %>script script script<% Moth.EndScript xxxxxxxxxxxxxxxxxxxxxxxxxx %>
+        private static Regex _inlinePattern = new Regex(@"<%\s*Moth\.BeginScript (Current|EndOfPage) ([0-9a-f]{32})\s*%>(.*)<%\s*Moth\.EndScript \2\s*%>", RegexOptions.Compiled | RegexOptions.Singleline);
 
         public string Replace(HttpContextBase httpContext, ControllerContext controllerContext, string input)
         {
@@ -38,22 +36,21 @@ namespace Moth.Core.Modules.Scripts
             string collectedInlineScripts = "";
 
             MatchCollection allInlineScriptBlocks = _inlinePattern.Matches(resultString);
-            foreach (var blockStart in allInlineScriptBlocks.Cast<Match>().Reverse())
+            foreach (var block in allInlineScriptBlocks.Cast<Match>().Reverse())
             {
-                Match end = _inlineEndPattern.Match(resultString, blockStart.Index);
-                if (!end.Success) continue;
-                string scriptContent = resultString.Substring(blockStart.Index + blockStart.Length, end.Index - blockStart.Index - blockStart.Length);
-                if (blockStart.Groups[1].Value == ScriptPositionEnum.Current.ToString())
+                string scriptContent = block.Groups[3].Value;
+                string pos = block.Groups[1].Value;
+                if (pos == ScriptPositionEnum.Current.ToString())
                 {
-                    resultString = resultString.Substring(0, blockStart.Index) +
-                        scriptContent +
-                        resultString.Substring(end.Index + end.Length);
+                    resultString = resultString.Substring(0, block.Index) +
+                        MakeScriptOutputFor(scriptContent) +
+                        resultString.Substring(block.Index + block.Length);
                 }
-                else if (blockStart.Groups[1].Value == ScriptPositionEnum.EndOfPage.ToString())
+                else if (pos == ScriptPositionEnum.EndOfPage.ToString())
                 {
                     collectedInlineScripts += scriptContent;
-                    resultString = resultString.Substring(0, blockStart.Index) +
-                        resultString.Substring(end.Index + end.Length);
+                    resultString = resultString.Substring(0, block.Index) +
+                        resultString.Substring(block.Index + block.Length);
                 }
             }
 
@@ -76,6 +73,13 @@ namespace Moth.Core.Modules.Scripts
             {
                 return "";
             }
+            content = MakeScriptOutputFor(content);
+
+            return String.Format("<script type=\"text/javascript\">{0}</script>", content);
+        }
+
+        private static string MakeScriptOutputFor(string content)
+        {
             var key = "inputhelper.scripts." + new MurmurHash2UInt32Hack().Hash(Encoding.UTF8.GetBytes(content));
             if (Provider.Enable.ScriptMinification)
             {
@@ -93,8 +97,7 @@ namespace Moth.Core.Modules.Scripts
                     content = minified;
                 }
             }
-
-            return String.Format("<script type=\"text/javascript\">{0}</script>", content);
+            return content;
         }
 
         internal string GetScriptsFromHttpContext(HttpContextBase httpContext, ControllerContext controllerContext)
