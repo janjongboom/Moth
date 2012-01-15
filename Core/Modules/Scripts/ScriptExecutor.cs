@@ -9,6 +9,8 @@ using System.Web.Routing;
 using Moth.Core.Execution;
 using Moth.Core.Helpers;
 using Moth.Core.Providers;
+using Yahoo.Yui.Compressor;
+using System.Globalization;
 
 namespace Moth.Core.Modules.Scripts
 {
@@ -24,13 +26,78 @@ namespace Moth.Core.Modules.Scripts
         }
 
         // <% Moth.RenderJavascript(); %>
-        private static Regex _pattern = new Regex(@"<%\s*Moth\.RenderJavascript\(\);\s*%>", RegexOptions.Compiled);
+        private static Regex _renderPattern = new Regex(@"<%\s*Moth\.RenderJavascript\(\);\s*%>", RegexOptions.Compiled);
+        // <% Moth.BeginScript EndOfPage xxxxxxxxxxxxxxxxxxxxxxxxxx %>script script script<% Moth.EndScript xxxxxxxxxxxxxxxxxxxxxxxxxx %>
+        private static Regex _inlinePattern = new Regex(@"<%\s*Moth\.BeginScript (Current|EndOfPage) ([0-9a-f]{32})\s*%>(.*)<%\s*Moth\.EndScript \2\s*%>", RegexOptions.Compiled | RegexOptions.Singleline);
 
         public string Replace(HttpContextBase httpContext, ControllerContext controllerContext, string input)
         {
-            if (!_pattern.Match(input).Success) return input;
+            string resultString = input;
+            string collectedInlineScripts = "";
 
-            return _pattern.Replace(input, GetScriptsFromHttpContext(httpContext, controllerContext));
+            MatchCollection allInlineScriptBlocks = _inlinePattern.Matches(resultString);
+            foreach (var block in allInlineScriptBlocks.Cast<Match>().Reverse())
+            {
+                string scriptContent = block.Groups[3].Value;
+                string pos = block.Groups[1].Value;
+                if (pos == ScriptPositionEnum.Current.ToString())
+                {
+                    resultString = resultString.Substring(0, block.Index) +
+                        MakeScriptOutputFor(scriptContent) +
+                        resultString.Substring(block.Index + block.Length);
+                }
+                else if (pos == ScriptPositionEnum.EndOfPage.ToString())
+                {
+                    collectedInlineScripts += scriptContent;
+                    resultString = resultString.Substring(0, block.Index) +
+                        resultString.Substring(block.Index + block.Length);
+                }
+            }
+
+
+            Match m = _renderPattern.Match(resultString);
+            if (m.Success)
+            {
+                resultString = resultString.Substring(0, m.Index) +
+                    GetScriptsFromHttpContext(httpContext, controllerContext) +
+                    MakeScriptBlockFor(collectedInlineScripts) +
+                    resultString.Substring(m.Index + m.Length);
+            }
+
+            return resultString;
+        }
+
+        private string MakeScriptBlockFor(string content)
+        {
+            if (content == null || content.Trim() == "")
+            {
+                return "";
+            }
+            content = MakeScriptOutputFor(content);
+
+            return String.Format("<script type=\"text/javascript\">{0}</script>", content);
+        }
+
+        private static string MakeScriptOutputFor(string content)
+        {
+            var key = "inputhelper.scripts." + new MurmurHash2UInt32Hack().Hash(Encoding.UTF8.GetBytes(content));
+            if (Provider.Enable.ScriptMinification)
+            {
+                var minified = Provider.GetFromCache(key,
+                                                     () => JavaScriptCompressor.Compress(content, false, true, true, false, Int32.MaxValue, Encoding.UTF8, new CultureInfo("en-US")),
+                                                     Provider.CacheDurations.InlineScript);
+
+                if (!content.Contains("<script") && minified.Contains("<script"))
+                {
+                    // YUI compressor makes some mistakes when doing inline thingy's. Like making '<scr' + 'ipt>' into <script> which breaks browser
+                    // so we won't compress this part. sorry :-)
+                }
+                else
+                {
+                    content = minified;
+                }
+            }
+            return content;
         }
 
         internal string GetScriptsFromHttpContext(HttpContextBase httpContext, ControllerContext controllerContext)
