@@ -12,7 +12,7 @@ namespace Moth.Core.Modules.OutputSubstitution
 {
     internal class OutputSubstitutionExecutor : IExecutor
     {
-        private static readonly Regex PartialAction = new Regex(@"<%\s*?Moth\.RenderAction\((['""])(?<action>\w+)\1,\1(?<controller>\w+)\1,\1(?<area>\w+)\1\);\s*%>", RegexOptions.Compiled);
+        private static readonly Regex PartialAction = new Regex(@"<%\s*?Moth\.RenderAction\((['""])(?<action>\w+)\1,\1(?<controller>\w+)\1,\1(?<area>\w*)\1\);\s*%>", RegexOptions.Compiled);
 
         public string Replace(HttpContextBase httpContext, ControllerContext controllerContext, string input)
         {
