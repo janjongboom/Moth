@@ -12,7 +12,7 @@ namespace Moth.Core.Modules.OutputSubstitution
 {
     internal class OutputSubstitutionExecutor : IExecutor
     {
-        private static readonly Regex PartialAction = new Regex(@"<%\s*?Moth\.RenderAction\((['""])(?<action>\w+)\1,\1(?<controller>\w+)\1\);\s*%>", RegexOptions.Compiled);
+        private static readonly Regex PartialAction = new Regex(@"<%\s*?Moth\.RenderAction\((['""])(?<action>\w+)\1,\1(?<controller>\w+)\1,\1(?<area>\w+)\1\);\s*%>", RegexOptions.Compiled);
 
         public string Replace(HttpContextBase httpContext, ControllerContext controllerContext, string input)
         {
@@ -26,6 +26,15 @@ namespace Moth.Core.Modules.OutputSubstitution
             {
                 string action = m.Groups["action"].Value;
                 string controller = m.Groups["controller"].Value;
+                object routeValues = null;
+                if (m.Groups["area"].Success)
+                {
+                    string area = m.Groups["area"].Value;
+                    if(!string.IsNullOrEmpty(area))
+                    {
+                        routeValues = new {area};
+                    }
+                }
 
                 using (var ms = new MemoryStream())
                 using (var tw = new StreamWriter(ms))
@@ -34,7 +43,7 @@ namespace Moth.Core.Modules.OutputSubstitution
 
                     Stopwatch actionSw = Stopwatch.StartNew();
 
-                    html.RenderAction(action, controller);
+                    html.RenderAction(action, controller, routeValues);
 
                     actionSw.Stop();
                     Trace.Write(string.Format("Donut hole: {0} took {1:F2} ms.", action, actionSw.Elapsed.TotalMilliseconds));
