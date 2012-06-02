@@ -41,7 +41,7 @@ function<out Function func> =	(. func = new Function();
 					//if (t.Value.EndsWith("=")) {
 					if (first) {
 						first = false;
-					} else if (t.Value != null && !t.Value.EndsWith("=")) {
+					} else if (t.Value == null || !t.Value.EndsWith("=")) {
 						txt.Append(", ");
 					}
 
